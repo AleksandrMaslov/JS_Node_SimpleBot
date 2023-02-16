@@ -1,5 +1,7 @@
 import TelegramApi from 'node-telegram-bot-api'
 
+import { keyboardOptions } from './options.js'
+
 console.log('Bot is online...')
 const token = '6232959751:AAGyW3KyPIN2fT8cqhXoJ_eVI1bW0Nzjf_s'
 const bot = new TelegramApi(token, { polling: true })
@@ -27,12 +29,19 @@ function start() {
     }
 
     if (text === '/info') {
-      return bot.sendMessage(chatId, `Тебя зовут: ${userName}`)
+      return bot.sendMessage(chatId, `Тебя зовут: ${userName}`, keyboardOptions)
     }
 
     if (text.startsWith('/')) {
       return bot.sendMessage(chatId, `Я тебя не понимаю, попробуй еще раз`)
     }
+  })
+
+  bot.on('callback_query', async (msg) => {
+    const chatId = msg.message.chat.id
+    const data = msg.data
+
+    return bot.sendMessage(chatId, data)
   })
 }
 
